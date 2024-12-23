@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آلة حاسبة</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #83a4d4, #b6fbff); /* خلفية متدرجة مريحة */
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calculator {
+            width: 320px;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .title {
+            font-size: 32px;
+            color: #FF8C00; /* برتقالي فاتح متدرج */
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: linear-gradient(to right, #FF8C00, #FFD700); /* تدرج لوني برتقالي */
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .screen {
+            width: 100%;
+            height: 50px;
+            margin-bottom: 20px;
+            text-align: right;
+            font-size: 24px;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .button {
+            padding: 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+        }
+
+        .button-clear {
+            background-color: #f44336;
+        }
+
+        .button-clear:hover {
+            background-color: #e53935;
+        }
+
+        .button-backspace {
+            background-color: #ff9800;
+        }
+
+        .button-backspace:hover {
+            background-color: #fb8c00;
+        }
+
+        .button-night {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .button-night:hover {
+            background-color: #555;
+        }
+
+        .night-mode {
+            background-color: #004C6D; /* أزرق داكن متدرج */
+            color: white;
+        }
+
+        .night-mode .screen {
+            background-color: #1E3C51; /* خلفية داكنة للشاشة */
+            color: white;
+        }
+
+        .night-mode .button {
+            background-color: #5A7D91;
+            color: white;
+        }
+
+        .night-mode .button:hover {
+            background-color: #4A6C82;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator" id="calculator">
+        <!-- عنوان الآلة الحاسبة -->
+        <div class="title">آلة حاسبة</div>
+
+        <!-- زر الوضع الليلي خارج الآلة الحاسبة -->
+        <button class="button-night" onclick="toggleNightMode()">الوضع الليلي</button>
+
+        <input type="text" class="screen" id="screen" disabled>
+        <div class="buttons">
+            <!-- أزرار الأرقام من 1 إلى 9 -->
+            <button class="button" onclick="addToScreen('1')">1</button>
+            <button class="button" onclick="addToScreen('2')">2</button>
+            <button class="button" onclick="addToScreen('3')">3</button>
+            <button class="button" onclick="addToScreen('4')">4</button>
+            <button class="button" onclick="addToScreen('5')">5</button>
+            <button class="button" onclick="addToScreen('6')">6</button>
+            <button class="button" onclick="addToScreen('7')">7</button>
+            <button class="button" onclick="addToScreen('8')">8</button>
+            <button class="button" onclick="addToScreen('9')">9</button>
+            
+            <!-- أزرار العمليات -->
+            <button class="button" onclick="addToScreen('+')">+</button>
+            <button class="button" onclick="addToScreen('-')">-</button>
+            <button class="button" onclick="addToScreen('*')">*</button>
+            <button class="button" onclick="addToScreen('/')">/</button>
+            
+            <!-- زر الجذر التربيعي -->
+            <button class="button" onclick="addToScreen('√')">√</button>
+            
+            <!-- زر المسح (التصفير) -->
+            <button class="button button-clear" onclick="clearScreen()">C</button>
+
+            <!-- زر الرجوع للخلف -->
+            <button class="button button-backspace" onclick="backspace()">←</button>
+
+            <!-- زر نتيجة العملية -->
+            <button class="button" onclick="calculateResult()">=</button>
+        </div>
+    </div>
+
+    <script>
+        // إضافة الأرقام أو العمليات إلى الشاشة
+        function addToScreen(value) {
+            var screen = document.getElementById('screen');
+            screen.value += value;
+        }
+
+        // مسح الشاشة
+        function clearScreen() {
+            var screen = document.getElementById('screen');
+            screen.value = '';
+        }
+
+        // الرجوع للخلف (حذف آخر إدخال)
+        function backspace() {
+            var screen = document.getElementById('screen');
+            screen.value = screen.value.slice(0, -1);
+        }
+
+        // حساب نتيجة العملية
+        function calculateResult() {
+            var screen = document.getElementById('screen');
+            try {
+                // استبدال √ بالجذر التربيعي في المعادلة
+                if (screen.value.includes('√')) {
+                    // إذا كانت المعادلة تحتوي على الجذر التربيعي
+                    var number = screen.value.replace('√', '');
+                    var result = Math.sqrt(parseFloat(number));
+                    screen.value = result;
+                } else {
+                    // إذا كانت المعادلة لا تحتوي على الجذر التربيعي
+                    var result = eval(screen.value);
+                    screen.value = result;
+                }
+            } catch (e) {
+                screen.value = 'خطأ';
+            }
+        }
+
+        // تفعيل/إيقاف الوضع الليلي
+        function toggleNightMode() {
+            var calculator = document.getElementById('calculator');
+            calculator.classList.toggle('night-mode');
+        }
+    </script>
+</body>
+</html>
